@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Dashboard Unificado (Google Sheets) — Estética Chart</title>
+  <title>Dashboard RRSS ObSBA</title>
 
   <!-- Google Charts -->
   <script src="https://www.gstatic.com/charts/loader.js"></script>
@@ -74,7 +74,7 @@
 </head>
 <body>
   <div class="dashboard-container">
-    <h1>Dashboard Unificado (Google Sheets)</h1>
+  <h1>Dashboard RRSS ObSBA</h1>
 
     <div class="controls">
       <div>
@@ -92,7 +92,6 @@
       <div class="card-title" id="cardTitle">Seleccione una red y un gráfico</div>
       <div id="chart_area">Cargando...</div>
       <div id="chartInfo" class="info"></div>
-      <div class="footer-note">Asegúrate de que la hoja es pública (cualquiera con el enlace puede ver).</div>
     </div>
   </div>
 
@@ -111,7 +110,7 @@ const SHEETS = {
 const CHARTS_BY_SHEET = {
   "General": {
     "promedios": {
-      label: "Promedios generales (A-D)",
+      label: "Promedios generales",
       query: 'SELECT A, B, C, D LABEL A "Año"',
       chartType: 'ColumnChart'
     }
@@ -119,17 +118,19 @@ const CHARTS_BY_SHEET = {
 
   "Instagram": {
     "anual": {
-      label: "Anual (A-D)",
+      label: "Tasa de compromiso total",
       query: 'SELECT A, B, C, D LABEL A "Año"',
       chartType: 'ColumnChart'
     },
     "bimestral": {
-      label: "Bimestral (H-N)",
-      query: 'SELECT H, I, J, K, L, M, N LABEL H "Bimestre"',
+      label: "Tasa de compromiso por bimestres",
+query: `SELECT H, I, J, K, L, M, N
+  WHERE H IS NOT NULL AND (I IS NOT NULL OR J IS NOT NULL OR K IS NOT NULL OR L IS NOT NULL OR M IS NOT NULL OR N IS NOT NULL)
+  LABEL H 'Año'`,
       chartType: 'ColumnChart'
     },
     "tipo_post": {
-      label: "Tipo de Post (E-G)",
+      label: "Anual. Por tipo de publicación",
       query: 'SELECT E, F, G LABEL E "Año"',
       chartType: 'ColumnChart'
     }
@@ -137,99 +138,99 @@ const CHARTS_BY_SHEET = {
 
   "Facebook": {
     "anual": {
-      label: "Anual (A-D)",
+      label: "Tasa de compromiso total",
       query: 'SELECT A, B, C, D LABEL A "Año"',
       chartType: 'ColumnChart'
     },
     "bimestral": {
-      label: "Bimestral (I-O)",
-      query: 'SELECT I, J, K, L, M, N, O LABEL I "Bimestre"',
+      label: "Tasa de compromiso por bimestres.",
+     query: `SELECT I, J, K, L, M, N, O WHERE I IS NOT NULL AND (J IS NOT NULL OR K IS NOT NULL OR L IS NOT NULL OR M IS NOT NULL OR N IS NOT NULL OR O IS NOT NULL) LABEL I 'Bimestre'`,
       chartType: 'ColumnChart'
     },
     "tipo_post": {
-      label: "Tipo de Post (E-H)",
+      label: "Facebook anual. Por tipo de publicación",
       query: 'SELECT E, F, G, H LABEL E "Año"',
       chartType: 'ColumnChart'
     }
   },
   "X": {
     "anual": {
-      label: "Anual (A-D)",
-      query: 'SELECT A, B, C, D LABEL A "Año"',
+      label: "Tasa de compromiso total",
+      query: `SELECT A, B, C, D WHERE A IS NOT NULL AND (B IS NOT NULL OR C IS NOT NULL OR D IS NOT NULL) LABEL A 'Año'`,
       chartType: 'ColumnChart'
     },
     "bimestral": {
-      label: "TC Bimestral (J-P)",
-      query: 'SELECT J, K, L, M, N, O, P LABEL J "Bimestre"',
+      label: "Tasa de compromiso por bimestres",
+     query: `SELECT J, K, L, M, N, O, P WHERE J IS NOT NULL AND (K IS NOT NULL OR L IS NOT NULL OR M IS NOT NULL OR N IS NOT NULL OR O IS NOT NULL OR P IS NOT NULL) LABEL J 'Bimestre'`,
       chartType: 'ColumnChart'
     },
     "bimestres_tipo_2025": {
-      label: "2025: TC por bimestres y tipo (R-T)",
-      query: 'SELECT R, S, T LABEL R "Bimestre"',
+      label: "2025: TC por bimestres y tipo",
+      query: `SELECT R, S, T WHERE R IS NOT NULL AND (S IS NOT NULL OR T IS NOT NULL) LABEL R 'Bimestre'`,
       chartType: 'ColumnChart'
     },
     "tipo_por_anio": {
-      label: "TC por año y tipo (F-H)",
-      query: 'SELECT F, G, H LABEL F "Año"',
+      label: "TC por año y tipo",
+      query: `SELECT F, G, H WHERE F IS NOT NULL AND (G IS NOT NULL OR H IS NOT NULL) LABEL F 'Año'`,
       chartType: 'ColumnChart'
     }
   },
   "TikTok": {
     "anual": {
-      label: "Anual (A-D)",
-      query: 'SELECT A, B, C, D LABEL A "Año"',
+      label: "Tasa de compromiso total",
+      query: `SELECT A, B, C, D WHERE A IS NOT NULL AND (B IS NOT NULL OR C IS NOT NULL OR D IS NOT NULL) LABEL A 'Año'`,
       chartType: 'ColumnChart'
     },
     "bimestral": {
-      label: "TC s/visualizaciones — Bimestral (K-Q)",
-      query: 'SELECT K, L, M, N, O, P, Q LABEL K "Bimestre"',
+      label: "Tasa de compromiso. Visualizaciones. Bimestral",
+      query: `SELECT K, L, M, N, O, P, Q WHERE K IS NOT NULL AND (L IS NOT NULL OR M IS NOT NULL OR N IS NOT NULL OR O IS NOT NULL OR P IS NOT NULL OR Q IS NOT NULL) LABEL K 'Bimestre'`,
       chartType: 'ColumnChart'
     },
     "bimestres_tipo": {
-      label: "TC s/v — bimestres y tipo (S-V)",
-      query: 'SELECT S, T, U, V LABEL S "Bimestre"',
+      label: "Tasa de compromiso. Por bimestres",
+      query: `SELECT S, T, U, V WHERE S IS NOT NULL AND (T IS NOT NULL OR U IS NOT NULL OR V IS NOT NULL) LABEL S 'Bimestre'`,
       chartType: 'ColumnChart'
     },
     "tipo_x_anio": {
-      label: "TC por año y tipo (F-I)",
-      query: 'SELECT F, G, H, I LABEL F "Año"',
+      label: "Anual. Por tipo de publicación",
+      query: `SELECT F, G, H, I WHERE F IS NOT NULL AND (G IS NOT NULL OR H IS NOT NULL OR I IS NOT NULL) LABEL F 'Año'`,
       chartType: 'ColumnChart'
     }
   },
   "YouTube": {
     "anual": {
-      label: "Anual (A-C)",
-      query: 'SELECT A, B, C LABEL A "Año"',
+      label: "Tasa de compromiso total",
+      query: `SELECT A, B, C WHERE A IS NOT NULL AND (B IS NOT NULL OR C IS NOT NULL) LABEL A 'Año'`,
       chartType: 'ColumnChart'
     },
     "bimestral": {
-      label: "TC Bimestral (P-V)",
-      query: 'SELECT P, Q, R, S, T, U, V LABEL P "Bimestre"',
+      label: "Tasa de compromiso total. Por bimestres",
+      query: `SELECT P, Q, R, S, T, U, V WHERE P IS NOT NULL AND (Q IS NOT NULL OR R IS NOT NULL OR S IS NOT NULL OR T IS NOT NULL OR U IS NOT NULL OR V IS NOT NULL) LABEL P 'Bimestre'`,
       chartType: 'ColumnChart'
     },
     "tc_shorts_anual": {
-      label: "TC Shorts — Anual (D-F)",
-      query: 'SELECT D, E, F LABEL D "Año"',
+      label: "Tasa de compromiso en SHORTS",
+      query: `SELECT D, E, F WHERE D IS NOT NULL AND (E IS NOT NULL OR F IS NOT NULL) LABEL D 'Año'`,
       chartType: 'ColumnChart'
     },
     "tc_video_anual": {
-      label: "TC Video — Anual (J-L)",
-      query: 'SELECT J, K, L LABEL J "Año"',
+      label: "Tasa de compromiso en VIDEOS",
+      query: `SELECT J, K, L WHERE J IS NOT NULL AND (K IS NOT NULL OR L IS NOT NULL) LABEL J 'Año'`,
       chartType: 'ColumnChart'
     },
     "tc_shorts_bimestral": {
-      label: "TC Shorts — Bimestral (W-AC)",
-      query: 'SELECT W, X, Y, Z, AA, AB, AC LABEL W "Bimestre"',
+      label: "Tasa de compromiso en SHORTS. Por bimestres",
+      query: `SELECT W, X, Y, Z, AA, AB, AC WHERE W IS NOT NULL AND (X IS NOT NULL OR Y IS NOT NULL OR Z IS NOT NULL OR AA IS NOT NULL OR AB IS NOT NULL OR AC IS NOT NULL) LABEL W 'Bimestre'`,
       chartType: 'ColumnChart'
     },
     "tipo_x_anio": {
-      label: "TC por año x tipo (G-I)",
-      query: 'SELECT G, H, I LABEL G "Año"',
+      label: "Tasa de compromiso total por tipo de publicación",
+     query: `SELECT G, H, I WHERE G IS NOT NULL AND (H IS NOT NULL OR I IS NOT NULL) LABEL G 'Año'`,
       chartType: 'ColumnChart'
     },
     "tc_2025_bimestres_tipo": {
-      label: "2025 — TC por bimestres y tipo (M-O)",
-      query: 'SELECT M, N, O LABEL M "Bimestre"',
+      label: "Tasa de compromiso 2025. Por bimestres",
+      query: `SELECT M, N, O WHERE M IS NOT NULL AND (N IS NOT NULL OR O IS NOT NULL) LABEL M 'Bimestre'`,
       chartType: 'ColumnChart'
     }
   }
@@ -260,8 +261,8 @@ function initUI() {
   chartSelect.addEventListener('change', () => loadSelectedChart());
 
   // seleccion por defecto
-  socialSelect.value = "Instagram";
-  populateChartsFor("Instagram");
+socialSelect.value = "General";
+populateChartsFor("General");
 }
 
 /* Llena chartSelect según social */
@@ -451,21 +452,34 @@ function buildOptions(title, seriesCount) {
   return {
     title: title,
     titleTextStyle: { color: "#4e73df", fontSize: 18, bold: true },
-    chartArea: { left: 70, top: 60, right: 30, bottom: 80, width: '80%', height:'65%' },
+    chartArea: { left: 70, top: 60, right: 30, bottom: 80, width:'80%', height:'65%' },
+
     legend: { position: 'bottom', textStyle: { fontSize: 12 } },
+
     hAxis: {
       textStyle: { fontSize: 12 },
       gridlines: { color: '#eef0f4' }
     },
+
     vAxis: {
       textStyle: { fontSize: 12 },
       gridlines: { color: '#e3e6f0' }
     },
+
     animation: { startup: true, duration: 600, easing: 'out' },
-    seriesType: 'bars'
+
+    seriesType: 'bars',
+
+    annotations: {
+      alwaysOutside: true,
+      textStyle: {
+        fontSize: 12,
+        bold: true,
+        //color: '#000'
+      }
+    }
   };
 }
-
 </script>
 </body>
 </html>
