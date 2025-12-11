@@ -111,7 +111,7 @@ const CHARTS_BY_SHEET = {
   "General": {
     "promedios": {
       label: "Promedios generales",
-      query: 'SELECT A, B, C, D LABEL A "Año"',
+      query: 'SELECT A, B, C, D  WHERE A IS NOT NULL AND (B IS NOT NULL OR C IS NOT NULL OR D IS NOT NULL) LABEL A "Año"',
       chartType: 'ColumnChart'
     }
   },
@@ -119,7 +119,7 @@ const CHARTS_BY_SHEET = {
   "Instagram": {
     "anual": {
       label: "Tasa de compromiso total",
-      query: 'SELECT A, B, C, D LABEL A "Año"',
+      query: 'SELECT A, B, C, D  WHERE A IS NOT NULL AND (B IS NOT NULL OR C IS NOT NULL OR D IS NOT NULL) LABEL A "Año"',
       chartType: 'ColumnChart'
     },
     "bimestral": {
@@ -131,7 +131,17 @@ query: `SELECT H, I, J, K, L, M, N
     },
     "tipo_post": {
       label: "Anual. Por tipo de publicación",
-      query: 'SELECT E, F, G LABEL E "Año"',
+      query: 'SELECT E, F, G  WHERE E IS NOT NULL AND (F IS NOT NULL OR G IS NOT NULL) LABEL E "Año"',
+      chartType: 'ColumnChart'
+    },    
+    "Top_Anual": {
+      label: "Top publicaciones anuales",
+      query: 'SELECT P, Q  WHERE P IS NOT NULL AND (Q IS NOT NULL) LABEL P "Top"',
+      chartType: 'ColumnChart'
+    },    
+    "Top_Bimestral": {
+      label: "Top publicaciones Bimestrales",
+      query: 'SELECT S, T, U, V  WHERE S IS NOT NULL AND (T IS NOT NULL OR U IS NOT NULL OR V IS NOT NULL) LABEL S "Bimestre"',
       chartType: 'ColumnChart'
     }
   },
@@ -139,7 +149,7 @@ query: `SELECT H, I, J, K, L, M, N
   "Facebook": {
     "anual": {
       label: "Tasa de compromiso total",
-      query: 'SELECT A, B, C, D LABEL A "Año"',
+      query: 'SELECT A, B, C, D  WHERE A IS NOT NULL AND (B IS NOT NULL OR C IS NOT NULL OR D IS NOT NULL) LABEL A "Año"',
       chartType: 'ColumnChart'
     },
     "bimestral": {
@@ -149,7 +159,17 @@ query: `SELECT H, I, J, K, L, M, N
     },
     "tipo_post": {
       label: "Facebook anual. Por tipo de publicación",
-      query: 'SELECT E, F, G, H LABEL E "Año"',
+      query: 'SELECT E, F, G, H  WHERE E IS NOT NULL AND (F IS NOT NULL OR G IS NOT NULL OR H IS NOT NULL) LABEL E "Año"',
+      chartType: 'ColumnChart'
+    },
+        "Top_Anual": {
+      label: "Top publicaciones anuales",
+      query: 'SELECT P, Q  WHERE P IS NOT NULL AND (Q IS NOT NULL) LABEL P "Top"',
+      chartType: 'ColumnChart'
+    },    
+    "Top_Bimestral": {
+      label: "Top publicaciones Bimestrales",
+      query: 'SELECT S, T, U, V  WHERE S IS NOT NULL AND (T IS NOT NULL OR U IS NOT NULL OR V IS NOT NULL) LABEL S "Bimestre"',
       chartType: 'ColumnChart'
     }
   },
@@ -173,6 +193,16 @@ query: `SELECT H, I, J, K, L, M, N
       label: "TC por año y tipo",
       query: `SELECT F, G, H WHERE F IS NOT NULL AND (G IS NOT NULL OR H IS NOT NULL) LABEL F 'Año'`,
       chartType: 'ColumnChart'
+    },
+        "Top_Anual": {
+      label: "Top publicaciones anuales",
+      query: 'SELECT W, X  WHERE W IS NOT NULL AND (X IS NOT NULL) LABEL W "Top"',
+      chartType: 'ColumnChart'
+    },    
+    "Top_Bimestral": {
+      label: "Top publicaciones Bimestrales",
+      query: 'SELECT Z, AA, AB, AC  WHERE Z IS NOT NULL AND (AA IS NOT NULL OR AB IS NOT NULL OR AC IS NOT NULL) LABEL Z "Bimestre"',
+      chartType: 'ColumnChart'
     }
   },
   "TikTok": {
@@ -194,6 +224,26 @@ query: `SELECT H, I, J, K, L, M, N
     "tipo_x_anio": {
       label: "Anual. Por tipo de publicación",
       query: `SELECT F, G, H, I WHERE F IS NOT NULL AND (G IS NOT NULL OR H IS NOT NULL OR I IS NOT NULL) LABEL F 'Año'`,
+      chartType: 'ColumnChart'
+    },
+        "Top_Anual": {
+      label: "Top publicaciones anuales",
+      query: 'SELECT P, Q  WHERE P IS NOT NULL AND (Q IS NOT NULL) LABEL P "Top"',
+      chartType: 'ColumnChart'
+    },    
+    "Top_Bimestral": {
+      label: "Top publicaciones Bimestrales",
+      query: 'SELECT S, T, U, V  WHERE S IS NOT NULL AND (T IS NOT NULL OR U IS NOT NULL OR V IS NOT NULL) LABEL S "Bimestre"',
+      chartType: 'ColumnChart'
+    },
+    "Top_Anual": {
+      label: "Top publicaciones anuales",
+      query: 'SELECT X ,Y WHERE X IS NOT NULL AND (Y IS NOT NULL) LABEL X "Top"',
+      chartType: 'ColumnChart'
+    },    
+    "Top_Bimestral": {
+      label: "Top publicaciones Bimestrales",
+      query: 'SELECT AA, AB, AC,AD  WHERE AA IS NOT NULL AND (AB IS NOT NULL OR AC IS NOT NULL OR AD IS NOT NULL) LABEL AA "Bimestre"',
       chartType: 'ColumnChart'
     }
   },
@@ -231,6 +281,16 @@ query: `SELECT H, I, J, K, L, M, N
     "tc_2025_bimestres_tipo": {
       label: "Tasa de compromiso 2025. Por bimestres",
       query: `SELECT M, N, O WHERE M IS NOT NULL AND (N IS NOT NULL OR O IS NOT NULL) LABEL M 'Bimestre'`,
+      chartType: 'ColumnChart'
+    },        
+    "Top_Anual": {
+      label: "Top publicaciones anuales",
+      query: 'SELECT AE, AF  WHERE AE IS NOT NULL AND (AF IS NOT NULL) LABEL AE "Top"',
+      chartType: 'ColumnChart'
+    },    
+    "Top_Bimestral": {
+      label: "Top publicaciones Bimestrales",
+      query: 'SELECT AH, AI, AJ, AK  WHERE AH IS NOT NULL AND (AI IS NOT NULL OR AJ IS NOT NULL OR AK IS NOT NULL) LABEL AH "Bimestre"',
       chartType: 'ColumnChart'
     }
   }
