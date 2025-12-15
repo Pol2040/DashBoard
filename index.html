@@ -136,14 +136,15 @@ query: `SELECT H, I, J, K, L, M, N
     },    
     "Top_Anual": {
       label: "Top publicaciones anuales",
-      query: 'SELECT P, Q  WHERE P IS NOT NULL AND (Q IS NOT NULL) LABEL P "Top"',
-      chartType: 'ColumnChart'
+      query: 'SELECT P, Q WHERE P IS NOT NULL AND (Q IS NOT NULL) LABEL P "Top"',
+      chartType: 'Card'
     },    
     "Top_Bimestral": {
       label: "Top publicaciones Bimestrales",
       query: 'SELECT S, T, U, V  WHERE S IS NOT NULL AND (T IS NOT NULL OR U IS NOT NULL OR V IS NOT NULL) LABEL S "Bimestre"',
-      chartType: 'ColumnChart'
-    }
+      chartType: 'Card'
+    },
+
   },
 
   "Facebook": {
@@ -362,7 +363,7 @@ function loadSelectedChart() {
   document.getElementById('cardTitle').textContent = `${SHEETS[social].label} — ${chartCfg.label}`;
   infoDiv.textContent = '';
 
-  // construir URL para el query (usamos tqx=out:json)
+  // construir URL para el query
   const gid = SHEETS[social].gid;
   const url = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?gid=${gid}&tqx=out:json&tq=${encodeURIComponent(chartCfg.query)}`;
 
@@ -391,7 +392,13 @@ function loadSelectedChart() {
       // crear DataTable a partir de json.table
    let dataTable = new google.visualization.DataTable(json.table);
 
-// --- FORZAR primera columna como TEXTO (evita 2,025.0) ---
+if (chartCfg.chartType === 'Card') {
+  window.renderCards(dataTable); 
+  return;
+}
+
+
+//FORZAR primera columna como TEXTO
 if (dataTable.getNumberOfRows() > 0) {
     const firstColType = dataTable.getColumnType(0);
     if (firstColType === 'number') {
@@ -420,7 +427,7 @@ if (dataTable.getNumberOfRows() > 0) {
     }
 }
 
-/* ███ RECONSTRUCCIÓN DE TABLA CON ANNOTATIONS ███ */
+/*RECONSTRUCCIÓN DE TABLA CON ANNOTATIONS*/
 
 // 1. Crear una nueva tabla vacía
 let newTable = new google.visualization.DataTable();
@@ -438,7 +445,7 @@ for (let col = 1; col < dataTable.getNumberOfColumns(); col++) {
   // copiar columna original
   newTable.addColumn(type, dataTable.getColumnLabel(col));
 
-  // si es numérica → agregar annotation
+  // si es numérica, agregar annotation
   if (type === "number") {
     newTable.addColumn({ type: "string", role: "annotation" });
   }
@@ -448,14 +455,13 @@ for (let col = 1; col < dataTable.getNumberOfColumns(); col++) {
 for (let row = 0; row < dataTable.getNumberOfRows(); row++) {
   let rowValues = [];
 
-  // columna 0 tal cual
+
   rowValues.push(dataTable.getValue(row, 0));
 
   for (let col = 1; col < dataTable.getNumberOfColumns(); col++) {
     let value = dataTable.getValue(row, col);
     rowValues.push(value);
 
-    // si es numérica → agregar annotation
     if (dataTable.getColumnType(col) === "number") {
       let formatted = (value !== null && !isNaN(value))
         ? value.toLocaleString("es-ES", { maximumFractionDigits: 2 })
@@ -466,20 +472,19 @@ for (let row = 0; row < dataTable.getNumberOfRows(); row++) {
 
   newTable.addRow(rowValues);
 }
-
-// reemplazar dataTable por la tabla nueva
 dataTable = newTable;
 
-/* ███ FIN RECONSTRUCCIÓN ███ */
-
-      
-      // detectamos si la primera columna es label (string) o numérica
+      // detecta si la primera columna es string o numérica
       const firstColType = dataTable.getColumnType(0); // 'string'|'number' etc
       let chartObj;
       const chartType = chartCfg.chartType || 'ColumnChart';
       const options = buildOptions(chartCfg.label, dataTable.getNumberOfColumns()-1);
 
       // elegir el chart según chartType
+if (chartType === 'Card') {
+    renderCards(dataTable);
+    return;
+}
       if (chartType === 'LineChart') {
         chartObj = new google.visualization.LineChart(document.getElementById('chart_area'));
       } else if (chartType === 'BarChart') {
@@ -538,8 +543,66 @@ function buildOptions(title, seriesCount) {
         //color: '#000'
       }
     }
-  };
-}
+  };}
+
+window.renderCards = function(dataTable) {
+  const chartArea = document.getElementById('chart_area');
+  const infoDiv = document.getElementById('chartInfo');
+
+  chartArea.innerHTML = '';
+  infoDiv.textContent = '';
+
+  if (!dataTable || typeof dataTable.getNumberOfRows !== 'function') {
+    chartArea.innerHTML = '<div style="color:#b00">No hay datos para mostrar.</div>';
+    return;
+  }
+
+  const rows = Math.min(dataTable.getNumberOfRows(), 10);
+
+  let html = `
+    <div style="
+      display:flex;
+      gap:20px;
+      justify-content:center;
+      flex-wrap:wrap;
+      padding:20px 0;
+    ">
+  `;
+
+  for (let r = 0; r < rows; r++) {
+    const colCount = dataTable.getNumberOfColumns();
+
+    const title      = colCount > 0 ? dataTable.getValue(r, 0) : "";
+    const value      = colCount > 1 ? dataTable.getValue(r, 1) : "";
+    const tipo       = colCount > 2 ? dataTable.getValue(r, 2) : "";
+    const bimestre   = colCount > 3 ? dataTable.getValue(r, 3) : "";
+
+    const valueText = (value !== null && !isNaN(value))
+      ? Number(value).toLocaleString('es-ES', { minimumFractionDigits: 2, maximumFractionDigits: 2 })
+      : (value ?? "");
+
+    html += `
+      <div style="
+        background:#ffffff;
+        width:260px;
+        border-radius:12px;
+        box-shadow:0 6px 18px rgba(0,0,0,0.12);
+        padding:20px;
+        display:flex;
+        flex-direction:column;
+        gap:8px;
+      ">
+        <div style="font-size:14px; color:#6b7280;">${tipo || ''}</div>
+        <div style="font-size:30px; font-weight:700; color:#111827;">${valueText}</div>
+        <div style="font-size:15px; color:#374151;">${title || ''}</div>
+        <div style="font-size:12px; color:#6b7280;">${bimestre || ''}</div>
+      </div>
+    `;
+  }
+
+  html += "</div>";
+  chartArea.innerHTML = html;
+};
 </script>
 </body>
 </html>
