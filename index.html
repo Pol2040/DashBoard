@@ -211,6 +211,19 @@ h1 {
 }
 
 /* ================= RESPONSIVE ================= */
+@media (max-width: 768px) {
+
+  /* Contenedor del label */
+  .grafico-label,
+  label {
+    display: block;
+    width: 100%;
+    white-space: normal;     /* permite salto de línea */
+    word-break: break-word;  /* corta si es necesario */
+    text-align: left;
+  }
+
+}
 @media (max-width: 768px) { /* tablets */
     .controls {
     flex-direction: column;
