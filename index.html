@@ -134,17 +134,18 @@ h1 {
   color: #111827;
 }
 
-/* ================= AUXILIARY CARDS LAYOUT ================= */
 #auxCardsContainer {
-  display: flex;
-  justify-content: center;
-  flex-wrap: wrap;
-  gap: 24px;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: 16px;
+  width: 100%;
+  padding: 0 12px;
 }
 
 #auxCardsContainer .card {
-  width: 220px;
+  width: 100%; 
 }
+
 
 
 /* ================= GRID DE TARJETAS ================= */
@@ -210,16 +211,36 @@ h1 {
 }
 
 /* ================= RESPONSIVE ================= */
-@media (max-width: 768px) {
-  .controls {
+@media (max-width: 768px) { /* tablets */
+    .controls {
     flex-direction: column;
   }
+  .aux-value {
+    font-size: 1.5rem;
+  }
 
-  .card {
-    width: 100%;
-    max-width: 360px;
+  .aux-label {
+    font-size: 0.7rem;
   }
 }
+
+@media (max-width: 480px) { /* celulares */
+    .controls {
+    flex-direction: column;
+  }
+  .aux-value {
+    font-size: 1.3rem;
+  }
+
+  .aux-label {
+    font-size: 0.65rem;
+  }
+
+  .aux-card {
+    padding: 12px 14px;
+  }
+}
+
 </style>
 </head>
 <body>
