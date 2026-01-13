@@ -896,6 +896,18 @@ options.colors = COLORS.slice(0, seriesCount);
 
       chartObj.draw(dataTable, options);
 
+   google.visualization.events.addListener(chartObj, 'select', function () {
+
+  const selection = chartObj.getSelection();
+  if (!selection.length) return;
+
+  const row = selection[0].row;
+
+  updateAuxCardsByRow(row, originalTable, chartCfg);
+
+});
+
+
       /* ================== TARJETAS AUX ================== */
       if (Array.isArray(chartCfg.auxColumns)) {
         renderAuxCardsFromDataTable(originalTable, chartCfg.auxColumns);
@@ -1133,10 +1145,6 @@ container.appendChild(card);
   });
 }
 
-
-
-
-
 function renderAuxCardByName(name, value) {
     return `
         <div class="card">
@@ -1145,6 +1153,35 @@ function renderAuxCardByName(name, value) {
         </div>
     `;
 }
+
+function updateAuxCardsByRow(row, dataTable, chartCfg) {
+
+  const container = document.getElementById('auxCardsContainer');
+  container.innerHTML = '';
+
+  chartCfg.auxColumns.forEach(colIndex => {
+
+    const label = dataTable.getColumnLabel(colIndex);
+    let value = dataTable.getValue(row, colIndex);
+
+    if (value === null) return;
+
+    value = Number(value).toFixed(2); // 2 decimales
+
+    const card = document.createElement('div');
+    card.className = 'card aux-card';
+
+    card.innerHTML = `
+      <div class="aux-row">
+        <span class="aux-label">${label}</span>
+        <span class="aux-value">${value}</span>
+      </div>
+    `;
+
+    container.appendChild(card);
+  });
+}
+
 
 </script>
 </body>
