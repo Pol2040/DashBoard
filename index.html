@@ -197,8 +197,9 @@
     }
 
     #auxCardsContainer {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
       gap: 1rem;
       width: 100%;
       margin-top: 1rem;
@@ -211,6 +212,9 @@
       border: 1px solid #f3f4f6;
       box-shadow: var(--shadow-sm);
       transition: var(--transition);
+      min-width: 180px;
+      flex: 1 1 200px;
+      max-width: 300px;
     }
 
     .aux-card:hover {
@@ -239,8 +243,9 @@
 
     /* ================= GRID DE TARJETAS TOP ================= */
     .card-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
       gap: 1.5rem;
       padding: 1.5rem 0;
     }
@@ -256,6 +261,8 @@
       gap: 1rem;
       position: relative;
       transition: var(--transition);
+      flex: 1 1 280px;
+      max-width: 400px;
     }
 
     .card:hover {
